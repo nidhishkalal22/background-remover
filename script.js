@@ -1,5 +1,5 @@
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
-const MAX_DIMENSION = 1500;
+const MAX_DIMENSION = 2048;
 
 const $ = (selector) => document.querySelector(selector);
 const uploadPanel = $("#upload-panel");
@@ -103,6 +103,8 @@ async function handleFile(file) {
     // The bundled ESM build includes the package dependencies for native browser imports.
     const { removeBackground } = await import("https://esm.sh/@imgly/background-removal@1.4.5?bundle");
     const blob = await removeBackground(preparedImage, {
+      model: "medium",
+      output: { type: "foreground", format: "image/png" },
       progress: (key, current, total) => {
         const ratio = total ? current / total : 0;
         const percent = Math.min(98, Math.max(10, Math.round(10 + ratio * 88)));
@@ -112,6 +114,7 @@ async function handleFile(file) {
     resultBlob = blob;
     resultUrl = URL.createObjectURL(blob);
     resultImage.src = resultUrl;
+    await updateComparisonAspectRatio(preparedImage);
     await initializeRefinement(preparedImage, blob);
     fileMeta.textContent = `PNG · ${formatBytes(blob.size)} processed`;
     setProgress(100, "All done", "Your cutout is ready to download.");
@@ -127,6 +130,11 @@ async function handleFile(file) {
     processing = false;
     chooseButton.disabled = false;
   }
+}
+
+async function updateComparisonAspectRatio(sourceBlob) {
+  const image = await loadImage(sourceBlob);
+  comparisonShell.style.setProperty("--image-ratio", `${image.naturalWidth} / ${image.naturalHeight}`);
 }
 
 function resizeImage(file) {
