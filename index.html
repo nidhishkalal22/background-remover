@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Remove image backgrounds instantly in your browser. Fast, private, and free with transparent PNG downloads."
+    />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
+    <title>BG Remover — Free private background remover</title>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#" aria-label="BG Remover home">
+        <span class="brand-mark" aria-hidden="true">✦</span>
+        <span>BG Remover</span>
+      </a>
+      <div class="header-actions">
+        <span class="privacy-chip"><span class="status-dot"></span> 100% in your browser</span>
+        <button class="icon-button" id="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">☾</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="page-title">
+        <p class="eyebrow">Simple background removal</p>
+        <h1 id="page-title">Remove backgrounds<br /><em>with ease.</em></h1>
+        <p class="hero-copy">Remove image backgrounds with AI, right in your browser. Fast, private, and ready when you are.</p>
+        <div class="trust-points" aria-label="Service benefits">
+          <span><b>✓</b> No sign-up</span>
+          <span><b>✓</b> No login required</span>
+          <span><b>✓</b> 100% free</span>
+        </div>
+      </section>
+
+      <section class="workspace" aria-label="Background remover workspace">
+        <div class="upload-panel" id="upload-panel">
+          <div class="upload-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14.5v3A2.5 2.5 0 0 0 7.5 20h9a2.5 2.5 0 0 0 2.5-2.5v-3"/></svg>
+          </div>
+          <h2>Drop an image here</h2>
+          <p>or choose a file from your device</p>
+          <button class="primary-button" id="choose-button" type="button">Choose image <span>→</span></button>
+          <input id="file-input" type="file" accept="image/png,image/jpeg,image/webp" hidden />
+          <small>PNG, JPG, JPEG or WEBP · max 10 MB</small>
+        </div>
+        <div class="upload-note"><span>♢</span> Your images never leave your browser. Processing is private and secure.</div>
+      </section>
+
+      <section class="processing-card is-hidden" id="processing-card" aria-live="polite">
+        <div class="processing-heading">
+          <span class="spinner"></span>
+          <div><strong id="processing-title">Preparing your image</strong><span id="processing-detail">Getting things ready…</span></div>
+          <strong id="progress-value">0%</strong>
+        </div>
+        <div class="progress-track"><div class="progress-bar" id="progress-bar"></div></div>
+      </section>
+
+      <section class="results-section is-hidden" id="results-section" aria-labelledby="results-title">
+        <div class="section-heading">
+          <div><p class="eyebrow">Your result</p><h2 id="results-title">A clean cutout.</h2></div>
+          <span class="file-meta" id="file-meta"></span>
+        </div>
+        <div class="comparison-shell" id="comparison-shell" style="--split: 50%">
+          <div class="comparison-canvas checkerboard" id="comparison-canvas">
+            <img class="comparison-image original-image" id="original-image" alt="Original uploaded image" />
+            <div class="result-layer" id="result-layer">
+              <img class="comparison-image result-image" id="result-image" alt="Background removed result" />
+            </div>
+            <div class="comparison-divider" aria-hidden="true"><span>↔</span></div>
+            <input class="comparison-range" id="comparison-range" type="range" min="0" max="100" value="50" aria-label="Compare original and result" />
+            <span class="compare-label before-label">Before</span><span class="compare-label after-label">After</span>
+          </div>
+        </div>
+        <div class="refinement-panel" id="refinement-panel">
+          <div class="refinement-heading">
+            <div>
+              <p class="eyebrow">Fine-tune your cutout</p>
+              <h3>Refine edges manually</h3>
+            </div>
+            <span class="refinement-help">Paint directly on the result to fix small details.</span>
+          </div>
+          <div class="editor-viewport checkerboard" id="editor-viewport">
+            <canvas id="resultCanvas" aria-label="Manual background refinement canvas"></canvas>
+          </div>
+          <div class="editor-toolbar">
+            <div class="tool-group mode-group" role="group" aria-label="Brush mode">
+              <button class="tool-button active" id="restore-mode" type="button">Restore</button>
+              <button class="tool-button" id="erase-mode" type="button">Erase</button>
+            </div>
+            <label class="brush-size">Brush <input id="brush-size" type="range" min="5" max="50" value="20" /><output id="brush-size-value">20px</output></label>
+            <div class="tool-group history-group" role="group" aria-label="Edit history">
+              <button class="tool-button icon-tool" id="zoom-out" type="button" aria-label="Zoom out">−</button>
+              <span id="zoom-value">100%</span>
+              <button class="tool-button icon-tool" id="zoom-in" type="button" aria-label="Zoom in">+</button>
+              <button class="tool-button icon-tool" id="undo-button" type="button" aria-label="Undo" disabled>↶</button>
+              <button class="tool-button icon-tool" id="redo-button" type="button" aria-label="Redo" disabled>↷</button>
+              <button class="tool-button reset-tool" id="reset-ai-button" type="button">Reset to AI result</button>
+            </div>
+          </div>
+        </div>
+        <div class="controls-row">
+          <div class="background-control">
+            <span class="control-label">Preview background</span>
+            <div class="swatches">
+              <button class="swatch transparent-swatch active" type="button" data-color="transparent" aria-label="Transparent background"></button>
+              <button class="swatch" type="button" data-color="#ffffff" style="--swatch: #ffffff" aria-label="White background"></button>
+              <button class="swatch" type="button" data-color="#c9ddff" style="--swatch: #c9ddff" aria-label="Blue background"></button>
+              <label class="color-picker" aria-label="Choose a custom background color"><input id="color-input" type="color" value="#f1ede5" /><span>+</span></label>
+            </div>
+          </div>
+          <div class="download-actions">
+            <button class="secondary-button" id="download-jpg" type="button">JPG <span>↓</span></button>
+            <button class="primary-button" id="download-png" type="button">Download PNG <span>↓</span></button>
+          </div>
+        </div>
+        <button class="reset-button" id="reset-button" type="button">↗ Try another image</button>
+      </section>
+
+      <div class="error-message is-hidden" id="error-message" role="alert"></div>
+    </main>
+    <footer><span>BG Remover</span><span>Private by design · Built for the web</span></footer>
+    <script type="module" src="script.js"></script>
+  </body>
+</html>
